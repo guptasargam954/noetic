@@ -1,0 +1,7 @@
+{
+  "name": "NUC - Noetic Universe Compiler",
+  "description": "A high-fidelity platform for compiling entire universes from epistemic and ontological axioms, featuring emergent physics and causality engines.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}

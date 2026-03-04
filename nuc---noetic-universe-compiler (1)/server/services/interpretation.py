@@ -1,17 +1,17 @@
 import os
-import google.generativeai as genai
+from google import genai
 from typing import Dict, Any, List
 
 class InterpretationService:
     """
-    Isures AI as an assistant layer only.
+    Uses AI as an assistant layer only.
     Roles: Symbolic translation, heuristic suggestion, and result explanation.
     """
     def __init__(self, api_key: str = None):
         if not api_key:
             api_key = os.getenv("GEMINI_API_KEY")
-        genai.configure(api_key=api_key)
-        self.model = genai.GenerativeModel('gemini-1.5-flash')
+        self.client = genai.Client(api_key=api_key)
+        self.model_id = 'gemini-1.5-flash'
 
     async def translate_axioms_to_symbolic(self, axioms: Dict[str, Any]) -> List[List[str]]:
         """
@@ -35,7 +35,10 @@ class InterpretationService:
         """
         
         try:
-            response = self.model.generate_content(prompt)
+            response = self.client.models.generate_content(
+                model=self.model_id,
+                contents=prompt
+            )
             # Basic cleanup if model includes markdown
             text = response.text.strip().replace("```python", "").replace("```", "").strip()
             return eval(text)
@@ -64,7 +67,10 @@ class InterpretationService:
         No marketing language. Serious scientific tone. Keep it under 150 words.
         """
         try:
-            response = self.model.generate_content(prompt)
+            response = self.client.models.generate_content(
+                model=self.model_id,
+                contents=prompt
+            )
             return response.text.strip()
         except:
             return "Calculated metric suggests stable localized curvature with adherence to energy conditions."
